@@ -1,5 +1,6 @@
 import json
 import base64
+import pdfplumber
 import streamlit as st
 import vertexai
 from google.oauth2 import service_account
