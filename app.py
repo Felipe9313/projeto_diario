@@ -1,41 +1,21 @@
 import streamlit as st
-
 import json
 import os
 import vertexai
-import pdfplumber  # <--- ADICIONE ESTA LINHA AQUI
+import pdfplumber
 from vertexai.generative_models import GenerativeModel
 
-import pdfplumber
-import google.generativeai as genai
-
-
-# 1. Carrega as credenciais que configuramos nos Secrets
-# Importante: O nome "SERVICE_ACCOUNT_JSON" aqui tem que ser IGUAL ao que você digitou no painel do Streamlit
+# Esta é a única linha que deve carregar o segredo:
 service_account_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
 
-# 2. Grava essas credenciais em um arquivo temporário para o Google ler
+# Grava temporariamente
 with open("temp_creds.json", "w") as f:
     json.dump(service_account_info, f)
 
-
-# 3. Configura a variável de ambiente para usar esse arquivo
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "temp_creds.json"
 
-# 4. Inicializa o Vertex AI
 vertexai.init(project=service_account_info["project_id"], location="us-central1")
 model = GenerativeModel("gemini-1.5-flash")
-
-# ... (o resto do seu código continua aqui embaixo normalmente)
-
-
-# Configuração da chave de API
-if "GOOGLE_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-    model = genai.GenerativeModel('gemini-flash-lite-latest')
-else:
-    st.error("Erro: A chave GOOGLE_API_KEY não foi encontrada nos Segredos (Secrets) do Streamlit.")
-    st.stop()
 
 
 # Interface de upload
