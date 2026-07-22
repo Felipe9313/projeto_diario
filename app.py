@@ -1,20 +1,26 @@
 import streamlit as st
-import pdfplumber
-import google.generativeai as genai
+import json
+import os
+import vertexai
+import pdfplumber  # <--- ADICIONE ESTA LINHA AQUI
+from vertexai.generative_models import GenerativeModel
 
-# Configuração da página
-st.set_page_config(page_title="Monitor de Diários - São Carlos", layout="wide")
+# 1. Carrega as credenciais que configuramos nos Secrets
+# Importante: O nome "SERVICE_ACCOUNT_JSON" aqui tem que ser IGUAL ao que você digitou no painel do Streamlit
+service_account_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
 
-st.title("🛡️ Monitor do Diário Oficial")
-st.markdown("Faça o upload do PDF e deixe a IA organizar as movimentações para você.")
+# 2. Grava essas credenciais em um arquivo temporário para o Google ler
+with open("temp_creds.json", "w") as f:
+    json.dump(service_account_info, f)
 
-# Configuração da chave de API
-if "GOOGLE_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-    model = genai.GenerativeModel('gemini-flash-lite-latest')
-else:
-    st.error("Erro: A chave GOOGLE_API_KEY não foi encontrada nos Segredos (Secrets) do Streamlit.")
-    st.stop()
+# 3. Configura a variável de ambiente para usar esse arquivo
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "temp_creds.json"
+
+# 4. Inicializa o Vertex AI
+vertexai.init(project=service_account_info["project_id"], location="us-central1")
+model = GenerativeModel("gemini-1.5-flash")
+
+# ... (o resto do seu código continua aqui embaixo normalmente)
 
 # Interface de upload
 uploaded_file = st.file_uploader("Selecione o PDF do Diário", type="pdf")
