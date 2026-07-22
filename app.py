@@ -18,13 +18,12 @@ credentials = service_account.Credentials.from_service_account_info(service_acco
 
 # 4. Inicializa o Vertex AI
 vertexai.init(
-    project=service_account_info["project_id"], 
-    location="southamerica-east1", 
+    project=service_account_info["project_id"],
+    location="us-central1",
     credentials=credentials
 )
 
-model = GenerativeModel("gemini-1.5-flash")
-
+model = GenerativeModel("gemini-2.5-flash")
 # Interface de upload
 uploaded_file = st.file_uploader("Selecione o PDF do Diário", type="pdf")
 
