@@ -79,6 +79,6 @@ if uploaded_file:
         except Exception as e:
 
             st.error(f"Ocorreu um erro ao processar o arquivo: {e}")
-=======
+
             st.error(f"Ocorreu um erro ao processar o arquivo: {e}")
 
