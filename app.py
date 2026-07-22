@@ -1,9 +1,14 @@
 import streamlit as st
+
 import json
 import os
 import vertexai
 import pdfplumber  # <--- ADICIONE ESTA LINHA AQUI
 from vertexai.generative_models import GenerativeModel
+
+import pdfplumber
+import google.generativeai as genai
+
 
 # 1. Carrega as credenciais que configuramos nos Secrets
 # Importante: O nome "SERVICE_ACCOUNT_JSON" aqui tem que ser IGUAL ao que você digitou no painel do Streamlit
@@ -13,6 +18,7 @@ service_account_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
 with open("temp_creds.json", "w") as f:
     json.dump(service_account_info, f)
 
+
 # 3. Configura a variável de ambiente para usar esse arquivo
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "temp_creds.json"
 
@@ -21,6 +27,16 @@ vertexai.init(project=service_account_info["project_id"], location="us-central1"
 model = GenerativeModel("gemini-1.5-flash")
 
 # ... (o resto do seu código continua aqui embaixo normalmente)
+
+=======
+# Configuração da chave de API
+if "GOOGLE_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    model = genai.GenerativeModel('gemini-flash-lite-latest')
+else:
+    st.error("Erro: A chave GOOGLE_API_KEY não foi encontrada nos Segredos (Secrets) do Streamlit.")
+    st.stop()
+
 
 # Interface de upload
 uploaded_file = st.file_uploader("Selecione o PDF do Diário", type="pdf")
@@ -61,4 +77,8 @@ if uploaded_file:
             st.success("Análise concluída com sucesso!")
             
         except Exception as e:
+
             st.error(f"Ocorreu um erro ao processar o arquivo: {e}")
+=======
+            st.error(f"Ocorreu um erro ao processar o arquivo: {e}")
+
