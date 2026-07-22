@@ -122,25 +122,19 @@ Mesmo que apareçam nome, cargo e matrícula de servidores, NÃO retorne esses r
 
 Retorne apenas registros cuja situação funcional do servidor tenha sido alterada.
 
-Retorne somente um JSON válido.
+Retorne uma lista JSON.
 
-Formato:
+Cada item deve possuir as chaves:
 
-[
-  {
-    "nome":"",
-    "matricula":"",
-    "cargo":"",
-    "secretaria":"",
-    "tipo_ato":"",
-    "data":""
-  }
-]
+- nome
+- matricula
+- cargo
+- secretaria
+- tipo_ato
+- data
 
-Se não existir nenhuma Nomeação, Exoneração ou Contratação, retorne:
-
-[]
-
+Não escreva Markdown.
+Retorne apenas o JSON.
 Texto:
 
 {texto[:120000]}
