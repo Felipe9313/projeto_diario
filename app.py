@@ -1,22 +1,28 @@
-import streamlit as st
 import json
-import os
+import base64
+import streamlit as st
 import vertexai
-import pdfplumber
+from google.oauth2 import service_account
 from vertexai.generative_models import GenerativeModel
 
-# Esta é a única linha que deve carregar o segredo:
-service_account_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
+# 1. Busca a chave correta que você acabou de configurar no Secrets
+b64_string = st.secrets["SERVICE_ACCOUNT_B64"]
 
-# Grava temporariamente
-with open("temp_creds.json", "w") as f:
-    json.dump(service_account_info, f)
+# 2. Decodifica a string para o formato JSON correto
+json_bytes = base64.b64decode(b64_string)
+service_account_info = json.loads(json_bytes)
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "temp_creds.json"
+# 3. Cria as credenciais com o JSON limpo
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
-vertexai.init(project=service_account_info["project_id"], location="us-central1")
+# 4. Inicializa o Vertex AI
+vertexai.init(
+    project=service_account_info["project_id"], 
+    location="southamerica-east1", 
+    credentials=credentials
+)
+
 model = GenerativeModel("gemini-1.5-flash")
-
 
 # Interface de upload
 uploaded_file = st.file_uploader("Selecione o PDF do Diário", type="pdf")
