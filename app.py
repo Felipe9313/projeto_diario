@@ -92,7 +92,7 @@ Regras:
 Texto:
 
 {texto_limpo}
-""
+
             """
             
             # 4. Chamada à API
