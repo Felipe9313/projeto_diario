@@ -28,7 +28,7 @@ model = GenerativeModel("gemini-1.5-flash")
 
 # ... (o resto do seu código continua aqui embaixo normalmente)
 
-=======
+
 # Configuração da chave de API
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
