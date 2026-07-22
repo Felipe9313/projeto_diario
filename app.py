@@ -84,48 +84,62 @@ if uploaded_file:
         try:
 
             prompt = f"""
-Você é especialista em Diários Oficiais brasileiros.
+Você é um especialista em Diários Oficiais brasileiros.
 
-Analise o texto abaixo e encontre SOMENTE atos relacionados a servidores públicos.
+Sua função é identificar APENAS movimentações funcionais de servidores públicos.
 
-Considere:
+Considere SOMENTE os seguintes atos:
 
 - Nomeação
 - Exoneração
-- Transferência
-- Remoção
-- Designação
-- Promoção
-- Posse
-- Licença
-- Afastamento
-- Cessão
+- Contratação (temporária, CLT, processo seletivo, concurso, admissão)
 
-Retorne SOMENTE um JSON válido.
+IGNORE COMPLETAMENTE qualquer outro tipo de ato, incluindo:
+
+- Designação de gestor de contrato
+- Designação de fiscal de contrato
+- Designação para comissão
+- Designação de comissão de licitação
+- Comissão de sindicância
+- Comissão de processo administrativo
+- Nomeação de comissão
+- Substituição de gestor
+- Delegação de competência
+- Portarias administrativas
+- Convênios
+- Licitações
+- Contratos
+- Aditivos
+- Compras públicas
+- Autorizações
+- Homologações
+- Ratificações
+- Atos financeiros
+
+IMPORTANTE:
+
+Mesmo que apareçam nome, cargo e matrícula de servidores, NÃO retorne esses registros se o ato não for uma Nomeação, Exoneração ou Contratação.
+
+Retorne apenas registros cuja situação funcional do servidor tenha sido alterada.
+
+Retorne somente um JSON válido.
 
 Formato:
 
 [
-  {{
+  {
     "nome":"",
     "matricula":"",
     "cargo":"",
     "secretaria":"",
     "tipo_ato":"",
     "data":""
-  }}
+  }
 ]
 
-Regras:
+Se não existir nenhuma Nomeação, Exoneração ou Contratação, retorne:
 
-- Nunca invente dados.
-- Se não existir matrícula escreva "N/I".
-- Se não existir cargo escreva "N/I".
-- Se não existir secretaria escreva "N/I".
-- Se não existir data escreva "N/I".
-- Não utilize Markdown.
-- Não escreva explicações.
-- Retorne apenas o JSON.
+[]
 
 Texto:
 
