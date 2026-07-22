@@ -41,17 +41,58 @@ if uploaded_file:
                 st.stop()
 
             # 2. Limpeza de caracteres especiais
-            texto_limpo = "".join([c if ord(c) < 128 else " " for c in texto_extraido])
+           # O código correto, mantendo os acentos:
+texto_limpo = texto_extraido
             
             # 3. Prompt de análise
-            prompt = f"""
-            Você é um especialista em análise de Diários Oficiais.
-            Analise o texto abaixo e extraia todas as movimentações de servidores (nomeações, exonerações, transferências, etc).
-            Retorne APENAS uma tabela Markdown com as colunas: | Nome | Matrícula | Secretaria | Cargo | Tipo de Ato | Data |.
-            Se não encontrar uma informação específica para um campo, escreva 'N/I'.
-            
-            Texto:
-            {texto_limpo[:10000]}
+           # 3. Prompt de análise
+prompt = f"""
+Você é um especialista em Diários Oficiais brasileiros.
+
+Analise todo o texto abaixo.
+
+Encontre apenas movimentações de servidores públicos.
+
+Considere:
+
+- Nomeação
+- Exoneração
+- Transferência
+- Remoção
+- Designação
+- Promoção
+- Posse
+- Licença
+- Afastamento
+- Cessão
+
+Retorne APENAS um JSON válido.
+
+Formato esperado:
+
+[
+  {{
+    "nome":"João da Silva",
+    "matricula":"12345",
+    "cargo":"Assistente Administrativo",
+    "secretaria":"Secretaria de Educação",
+    "tipo_ato":"Nomeação",
+    "data":"21/07/2026"
+  }}
+]
+
+Regras:
+
+- Nunca invente informações.
+- Se um campo não existir utilize "N/I".
+- Não escreva explicações.
+- Não use Markdown.
+- Retorne somente o JSON.
+
+Texto:
+
+{texto_limpo}
+"""
             """
             
             # 4. Chamada à API
@@ -59,7 +100,14 @@ if uploaded_file:
             
             # 5. Exibição dos resultados
             st.subheader("Resultados da Extração")
-            st.markdown(response.text)
+            import pandas as pd
+import json
+
+dados = json.loads(response.text)
+
+df = pd.DataFrame(dados)
+
+st.dataframe(df, use_container_width=True)
             st.success("Análise concluída com sucesso!")
             
         except Exception as e:
