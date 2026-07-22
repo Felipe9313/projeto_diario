@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 import base64
 import pdfplumber
 import streamlit as st
@@ -95,20 +96,19 @@ Texto:
 
             """
             
-            # 4. Chamada à API
-            response = model.generate_content(prompt)
-            
-            # 5. Exibição dos resultados
-            st.subheader("Resultados da Extração")
-            import pandas as pd
-import json
+           # 4. Chamada à API
+response = model.generate_content(prompt)
+
+# 5. Exibição dos resultados
+st.subheader("Resultados da Extração")
 
 dados = json.loads(response.text)
 
 df = pd.DataFrame(dados)
 
 st.dataframe(df, use_container_width=True)
-            st.success("Análise concluída com sucesso!")
+
+st.success("Análise concluída com sucesso!")
             
         except Exception as e:
 
